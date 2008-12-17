@@ -1,6 +1,7 @@
 (ns modernize
    (:gen-class)
-   (:use permutation 
+   (:use file-io
+         permutation 
          (clojure.contrib 
             str-utils 
             seq-utils
@@ -139,12 +140,18 @@
 (defn- parse-file-to-ds
    [f ds] ; vector or map
    (into (empty ds)
-      (for [l (line-seq (Rdr (Fis f)))] 
+      (for [l (line-seq (BRdr (Fis f)))] 
          (into [] (.split l "\\s")))))
 
 (defn- ext-split
    [#^String fname]
    (map (partial apply str) (split-at (.lastIndexOf fname ".") fname)))
+
+(defn write-results
+   [f coll]
+   (with-out-file f
+      (doseq [i coll]
+         (println i))))
 
 (defn -main
    [& args]
@@ -173,7 +180,7 @@
                [[dict-f words-f & pairs] rest-args
                 dict    (get-file-set dict-f)
                 words   (if (= words-f "-")
-                           (into #{} (line-seq (Rdr System/in)))
+                           (into #{} (line-seq (BRdr System/in)))
                            (get-file-set words-f))
                 mods    (if lookup
                            (parse-file-to-ds lookup [])
@@ -183,8 +190,10 @@
                      [(str nm ".matched" ext) (str nm ".notmatched" ext)])]
                (binding [*lookup-modifications* mods]
                   (let [results (apply run-perms-test dict words pairs)]
-                     (println (count (matches results)))
-                     (println (count (no-matches results))))))))))
+                     (write-results out-win 
+                        (map word-perm-to-string (matches results)))
+                     (write-results out-lose 
+                        (keys (no-matches results))))))))))
 
          
        

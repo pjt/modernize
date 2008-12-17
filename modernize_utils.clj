@@ -99,20 +99,12 @@
                        :else
                          strings))))))))
 
-(defn- Rdr
-   [#^java.io.InputStream Is]
-   (java.io.BufferedReader. (java.io.InputStreamReader. Is "UTF8")))
-
-(defn- Fis
-   [#^String f]
-   (java.io.FileInputStream. f))
-
 (defn get-file-set
    "Returns dictionary as set of /usr/share/dict/words items,
    or from any other newline-separated wordlist."
    [& path]
    (let [path (or (first path) "/usr/share/dict/words")]
-      (with-open [r (Rdr (mm/buffer-stream (mm/mmap path)))]
+      (with-open [r (BRdr (mm/buffer-stream (mm/mmap path)))]
          (into #{} (line-seq r)))))
 
 ;(defn get-file-set
@@ -124,7 +116,7 @@
 
 (defn read-pairs-dict
    [path]
-   (with-open [r (Rdr (Fis path))]
+   (with-open [r (BRdr (Fis path))]
       (into {} 
         (map #(.split % "\\s+") 
           (line-seq r)))))
