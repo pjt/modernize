@@ -107,8 +107,13 @@
          (when (empty? matches)
             (loop [wfs wordforms]
               (when-let [w (first wfs)]
-                (or (some #(when (dict (lower (first %))) %) (mod-lookup w))
-                  (recur (rest wfs))))))]
+                (or (some 
+                        #(when (dict (lower (first %))) %) 
+                        (mod-lookup w))
+                  (recur (rest wfs))))))
+       fallback  (when *fallbacks*
+                     (*fallbacks* word))]
+       ; TODO: integrate fallback result into hash-map
       [word
          {:orig         word
           :permutations perms 
@@ -140,7 +145,7 @@
 (defn- parse-file-to-ds
    [f ds] ; vector or map
    (into (empty ds)
-      (for [l (line-seq (BRdr (Fis f)))] 
+      (for [l (remove empty? (line-seq (BRdr (Fis f))))] 
          (into [] (.split l "\\s")))))
 
 (defn- ext-split
@@ -185,15 +190,20 @@
                 mods    (if lookup
                            (parse-file-to-ds lookup [])
                            *lookup-modifications*)
+                fallbacks
+                        (when fallback
+                           (parse-file-to-ds fallback {}))
                 [out-win out-lose]
                   (let [[nm ext] (ext-split words-f)]
                      [(str nm ".matched" ext) (str nm ".notmatched" ext)])]
-               (binding [*lookup-modifications* mods]
-                  (let [results (apply run-perms-test dict words pairs)]
+               (binding [*lookup-modifications* mods *fallbacks* fallbacks]
+                  (let [results  (apply run-perms-test dict words pairs)
+                        wins     (matches results)
+                        losses   (no-matches results)]
                      (write-results out-win 
-                        (map word-perm-to-string (matches results)))
+                        (map word-perm-to-string wins))
                      (write-results out-lose 
-                        (keys (no-matches results))))))))))
+                        (keys losses)))))))))
 
          
        
