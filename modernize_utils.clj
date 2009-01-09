@@ -62,6 +62,17 @@
    [results]
    (remove (fn [[k v]] (empty? (:matches v))) results))
 
+(defn fallback-matches
+   "Return perms for which a fallback match was found."
+   [results]
+   (remove (fn [[k v]] (nil? (:fallback v))) results))
+
+(defn trumped-fallbacks
+   "Returns perms for which a fallback match as well as a dictionary
+   match was found."
+   [results]
+   (filter (fn [[k v]] (not ((:matches v) (:fallback v)))) results))
+ 
 (defn new-matches
    "Return perms whose dictionary match differs from the original
    word (case insensitive)."
@@ -74,9 +85,9 @@
       results))
 
 (defn extract-patterns
-   "Extract the changes contexts from the perms."
-   [perms]
-   (freq (mapcat (comp :change-patterns val) perms)))
+   "Extract the change contexts from the perms."
+   [results]
+   (freq (mapcat (comp :change-patterns val) results)))
 
 (defn word-perm-to-string
    "Returns a string representation of a word-perms-test,
