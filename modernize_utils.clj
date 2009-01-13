@@ -115,7 +115,7 @@
    or from any other newline-separated wordlist."
    [& path]
    (let [path (or (first path) "/usr/share/dict/words")]
-      (with-open [r (BRdr (mm/buffer-stream (mm/mmap path)))]
+      (with-open [r (reader (mm/buffer-stream (mm/mmap path)))]
          (into #{} (line-seq r)))))
 
 ;(defn get-file-set
@@ -127,10 +127,9 @@
 
 (defn read-pairs-dict
    [path]
-   (with-open [r (BRdr (Fis path))]
-      (into {} 
-        (map #(.split % "\\s+") 
-          (line-seq r)))))
+   (into {} 
+     (map #(.split % "\\s+") 
+       (read-lines path))))
 
 (defn learn-from-lem
    "Takes spelling-lemma pairs & learns the correct spelling where 
@@ -153,3 +152,19 @@
          (str new (subs w (count lem)))
          new)))
 
+(defn rjust-cols
+   "Given pairs of strings, returns string formatted with the strings 
+   in the first position right-justified to the length of the longest 
+   string. E.g.
+      \"hello\" \"there\"
+      \"hi\"    \"you\"
+         =>
+      \"hello there\"
+      \"   hi you\""
+   [& strings]
+   (let [columns (partition 2 (map str strings))
+         max (apply max (map (comp count first) columns))
+         fmt (str "%" max "s %s")]
+      (str-join "\n"
+         (for [col columns]
+            (apply format fmt col)))))
