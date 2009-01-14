@@ -37,6 +37,7 @@
   <target name="jar" description="Create jar file" depends="compile">
     <jar jarfile="${modernize.jar}">
       <path location="LICENSE"/>
+      <fileset dir="." includes="*.clj"/>
       <fileset dir="${build.dir}" includes="**/*.class"/>
       <manifest>
          <attribute name="Main-Class" value="modernize"/>
