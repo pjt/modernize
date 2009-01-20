@@ -1,6 +1,9 @@
 #!/bin/sh
 
-java -jar modernize.jar data/bigdict-moby.txt data/th-words.txt \
+#java -server -Xmx256m -jar modernize.jar data/bigdict-moby.txt data/th-words.txt \
+java -server -Xmx256m -cp `clj --print-cp`:modernize.jar modernize \
+   ~/dev/sa-repos/works/volOne/trunk/theatre/bigdict-moby.txt \
+   ~/dev/sa-repos/works/volOne/trunk/theatre/th-words.txt \
    "i j" \
    "u v" \
    "v u" \
