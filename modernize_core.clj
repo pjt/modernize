@@ -130,7 +130,7 @@
    dict as dictionary, & letter pairs to permute."
    [dict words & pairs]
    (into {}
-      (map #(apply word-perms-test dict % pairs) words)))
+      (pmap #(apply word-perms-test dict % pairs) words)))
       ; pmap is marginally slower on small colls of words,
       ; reasonably faster (~20%) on large ones
       

@@ -7,17 +7,17 @@ import java.util.HashMap;
 import java.util.Collections;
 
 public class $classname$ {
-   public static final Map<String,String> LIST;
+   public static final Map<String,String> WORDS;
    static {
-      HashMap<String,String> list = new HashMap<String,String>();
+      HashMap<String,String> words = new HashMap<String,String>();
       $map-puts$
-      LIST = Collections.unmodifiableMap(list);
+      WORDS = Collections.unmodifiableMap(words);
    }
    public static boolean contains(String word) {
-      return LIST.containsKey(word);
+      return WORDS.containsKey(word);
    }
    public static String get(String word) {
-      return LIST.get(word);
+      return WORDS.get(word);
    }
    public static void main(String[] args) {
       if (contains(args[0])) {
@@ -32,7 +32,7 @@ public class $classname$ {
 
 (defn as-java-puts [m]
    (for [[k v] m :when (not= k v)]
-      (format "list.put(\"%s\",\"%s\");" k v))) 
+      (format "words.put(\"%s\",\"%s\");" k v))) 
 
 (when *command-line-args*
    (let [class-name (first *command-line-args*)
@@ -40,6 +40,7 @@ public class $classname$ {
          out  (.replace java-tmpl "$classname$" class-name)
          out  (.replace out "$map-puts$" (str-join "\n" puts))]
       (spit (str class-name ".java") out)
+      (println "Compiling" (str class-name ".java") "...")
       (println (sh "javac" "-encoding" "UTF8" (str class-name ".java")))))
             
 
