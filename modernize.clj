@@ -1,10 +1,10 @@
 (ns modernize
    (:gen-class)
-   (:use permutation 
-         (clojure.contrib 
+   (:use (clojure.contrib 
             duck-streams
             str-utils 
             seq-utils
+            combinatorics
             command-line))
    (:load "modernize_utils" "modernize_core"))
 

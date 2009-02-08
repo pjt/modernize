@@ -18,7 +18,7 @@
       (if (zero? hits)
          (list word)                         ; note "" on end of perms coll
          (map #(apply str (interleave pieces (concat (fix-case %) [""]))) 
-            (apply map-perm list (take hits (repeat alt-seq)))))))    
+            (apply cartesian-product (take hits (repeat alt-seq)))))))    
 
 (defn changed-chars-context
    "Given new and origanal word, returns changed characters in 

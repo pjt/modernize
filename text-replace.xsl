@@ -3,7 +3,8 @@
 	version="2.0" 
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
    xmlns:lookup="java:Lookup"
-	xmlns="http://www.tei-c.org/ns/1.0">
+	xmlns="http://www.tei-c.org/ns/1.0"
+   exclude-result-prefixes="lookup">
 
   <!--
 	  ============================================================
@@ -23,25 +24,15 @@
   -->
 
   <!-- default to copying element nodes, processing att nodes -->
-  <xsl:template match="*">
+  <xsl:template match="node()|@*">
 	<xsl:copy>
 	  <xsl:apply-templates select="@*"/> 
 	  <xsl:apply-templates/>
 	</xsl:copy>
   </xsl:template>
 
-  <!-- override default ignoring of comments -->
-  <xsl:template match="comment()">
-	<xsl:copy-of select="."/>
-  </xsl:template>
-
   <!-- override default ignoring of processing instructions -->
   <xsl:template match="processing-instruction()">
-	<xsl:copy-of select="."/>
-  </xsl:template>
-
-  <!-- default to copying attributes -->
-  <xsl:template match="@*">
 	<xsl:copy-of select="."/>
   </xsl:template>
 
@@ -84,12 +75,12 @@
        Special case for text nodes already in <reg>s
        ==============================================
   -->
-  <xsl:template match="*:reg[//text()]">
+  <xsl:template match="*:reg[text()]">
    <xsl:choose>
     <xsl:when test="some $t in tokenize(string(), '\W') satisfies lookup:contains($t)">
      <xsl:copy>
       <xsl:apply-templates select="@* except @type"/>
-      <xsl:attribute name="type">modernize <xsl:value-of select="replace(@type, 'modernize ?', '')"/>
+      <xsl:attribute name="type">modernize<xsl:value-of select="replace(@type, 'modernize', '')"/>
          </xsl:attribute>
       <xsl:apply-templates/>
      </xsl:copy>
