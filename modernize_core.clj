@@ -76,7 +76,8 @@
          (let [mod (first mods)
               [pat repl] [(re-pattern (first mod)) (second mod)]
               new-word (re-sub pat repl word)]
-           (lazy-cons [new-word orig] (mod-lookup* orig new-word (rest mods)))))))
+           (lazy-seq (cons [new-word orig] (mod-lookup* orig new-word (rest mods))))))))
+           ;(lazy-cons [new-word orig] (mod-lookup* orig new-word (rest mods)))))))
 
 (defn mod-lookup
    "Lookup modifier: returns distinct words made from making transformations 
@@ -84,7 +85,7 @@
    [word]
    (distinct
       (mapcat #(mod-lookup* word word %) 
-         (iter-rest *lookup-modifications*))))
+         (iter-next *lookup-modifications*))))
 
 (defn word-perms-test
    "Tests if any of permutations of word across given alternate sequences
@@ -107,7 +108,7 @@
                 (or (some 
                         #(when (dict (lower (first %))) %) 
                         (mod-lookup w))
-                  (recur (rest wfs))))))
+                  (recur (next wfs))))))
        fallback  (when *fallbacks*
                      (*fallbacks* word))]
       [word

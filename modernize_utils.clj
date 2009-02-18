@@ -12,12 +12,12 @@
    [& items]
    (first (sort-by count (comp - compare) items)))
 
-(defn iter-rest
-   "Takes the first (count coll) items from calls to (iterate rest coll).
+(defn iter-next
+   "Takes the first (count coll) items from calls to (iterate next coll).
    If passed function as first argument, calls it on each invocation of
-   rest, i.e. (iterate #(func (rest %)) coll)."
-   ([coll] (take (count coll) (iterate rest coll)))
-   ([func coll] (take (count coll) (iterate #(func (rest %)) coll))))
+   next, i.e. (iterate #(func (next %)) coll)."
+   ([coll] (take (count coll) (iterate next coll)))
+   ([func coll] (take (count coll) (iterate #(func (next %)) coll))))
 
 (defn common-subs
    "Returns sorted set of common contiguous subsequences of a and b. 
@@ -32,12 +32,12 @@
          (loop [inner-acc [] a a-val b b]
             (if (and a b)
                (if (= (first a) (first b))
-                  (recur (conj inner-acc (first a)) (rest a) (rest b))
+                  (recur (conj inner-acc (first a)) (next a) (next b))
                   (if (empty? inner-acc)
-                     (recur inner-acc a (rest b))
+                     (recur inner-acc a (next b))
                      (conj acc inner-acc)))
                (if (empty? inner-acc) acc (conj acc inner-acc)))))
-      #{} (iter-rest a)))
+      #{} (iter-next a)))
 
 (defn lcs
    "Longest Common (contiguous) Subsequence; see common-subs."
