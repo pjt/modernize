@@ -66,7 +66,7 @@
                      [cmd fmt]  (or (opts (second args))
                                     (throw (Exception. (str (second args) 
                                                                " not found"))))]
-                  (apply base (map fmt (cmd results)) (nthrest args 2)))
+                  (apply base (map fmt (cmd results)) (nthnext args 2)))
                (catch Exception e 
                   (println (.getMessage e)))
                (finally (flush)))
