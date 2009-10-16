@@ -71,7 +71,7 @@
 (defn mod-lookup*
    "Inner lookup modifier: modifies word recursively down list of translations."
    [orig word mods]
-   (when mods
+   (when (seq mods)
       (distinct
          (let [mod (first mods)
               [pat repl] [(re-pattern (first mod)) (second mod)]

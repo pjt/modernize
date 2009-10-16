@@ -50,7 +50,7 @@
 (defn interact
    "Provide interactive examination of results"
    [opts results]
-   (let [base-cmds {"show" #(println (str-join "\n" %)) 
+   (let [base-cmds {"show"  #(println (str-join "\n" %)) 
                     "count" #(println (count %))
                     "write" #(write-lines %2 %1)}
          read-line   #(do (print ">> ") (flush) (read-line))]
