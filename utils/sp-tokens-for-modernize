@@ -1,0 +1,8 @@
+#!/bin/bash
+# Produces list of tokens from Spenser XML for purposes of modernization. Eliminates
+# tokens in choice/orig, includes no tokens from the teiHeader.
+
+/usr/local/bin/xml ed -N tei=http://www.tei-c.org/ns/1.0 -d //tei:choice/tei:orig $1 | \
+   xquery '//*:text' | \
+   xstrip - | \
+   tknize - 
