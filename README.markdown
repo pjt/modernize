@@ -10,14 +10,14 @@ early modern printing.
 See bin/example-cmd.sh for example of how to run the program. It follows essentially 
 3 steps:
 
-    1 Run the modernize code against the tokens from a work
+  1 Run the modernize code against the tokens from a work
 
-    2 Run the output of 1 through the to-java-static-map code to produce a Java 
-    source file for a static map of spelling changes to be made, which is then 
-    compiled
+  2 Run the output of 1 through the to-java-static-map code to produce a Java 
+  source file for a static map of spelling changes to be made, which is then 
+  compiled
 
-    3 Run the modernize-text.xsl stylesheet against the work whose tokens went 
-    into 1, with the java class file compiled in 2 on the classpath
+  3 Run the modernize-text.xsl stylesheet against the work whose tokens went 
+  into 1, with the java class file compiled in 2 on the classpath
 
 Step 3 isn't included in example-cmd.sh; it'll look something like:
 
